@@ -9,6 +9,7 @@ const BudgetForm = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
         setBudget(+e.target.value)
     };
+    
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
