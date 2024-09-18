@@ -5,7 +5,8 @@ import { BudgetActions, IBudgetState } from "./budgetReducer.types";
 export const initialState :IBudgetState = {
     budget: 0,
     modal: false,
-    expenses:[]
+    expenses:[],
+    editingId:''
 
 }
 
@@ -23,17 +24,41 @@ export const budgetReducer = (state: IBudgetState = initialState, action: Budget
         }
 
         case 'close-modal' : {
-            return{...state, modal: false}
+            return{...state, 
+                modal: false,
+                editingId: ''
+            }
         }
 
         case 'add-expense' : {
-            const expense = createExpense(action.payload.expense)
-            return{...state, expenses: [...state.expenses, expense]}
+        
+                const expense = createExpense(action.payload.expense)
+                return{...state, expenses: [...state.expenses, expense]}
+           
+        };
+
+        case 'update-expense' : {
+
+                const uploadExpenses = state.expenses.map(exp => exp.id === action.payload.expense.id ? action.payload.expense : exp)
+         
+                return {
+                    ...state, 
+                    expenses: uploadExpenses,
+                 }
+          
         };
 
         case 'delete-expense' : {
             const uploadExpenses = state.expenses.filter(exp => exp.id !== action.payload.id)
             return{...state, expenses: uploadExpenses}
+        };
+
+        case 'get-expense-by-id' : {
+            return{
+                ...state,
+                editingId: action.payload.id,
+                modal: true
+             }
         };
 
         default : return state

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import DatePicker from "react-date-picker";
 import "react-date-picker/dist/DatePicker.css";
@@ -21,7 +21,14 @@ const ExpenseForm = () => {
 
   const { amount, expenseName, category, date } = expense;
 
-  const {dispatch} = useBudget()
+  const {dispatch, state} = useBudget();
+
+useEffect(()=>{
+  if(state.editingId){
+    const editingExpense = state.expenses.find(exp => exp.id === state.editingId)
+    if(editingExpense) setExpense(editingExpense)
+  }
+},[state.editingId])
 
 
   const handleChangeDate = (value: Value) => {
@@ -38,7 +45,20 @@ const ExpenseForm = () => {
 
       const isFormComplete = !Object.values(expense).includes('') && !Object.values(expense).includes(0) ;
 
-     return !isFormComplete ? setError('All fields are required') : (setError(''), dispatch({type:'add-expense', payload:{expense}}), dispatch({type:'close-modal'}), setExpense(initialStateExpense) )
+      if(!isFormComplete){
+        setError('All fields are required')
+      } else {
+        setError('');
+    
+        if(state.editingId){
+          dispatch({type:'update-expense', payload: {expense : {id:state.editingId, ...expense}}})
+        }else{
+          dispatch({type:'add-expense', payload:{expense}})
+        }
+       
+        dispatch({type:'close-modal'});
+         setExpense(initialStateExpense)
+      }
       
      }
 

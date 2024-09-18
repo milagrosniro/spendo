@@ -24,7 +24,7 @@ const ExpenseDetail = ({ expense }: IExpenseDetailProps) => {
 
   const leadingActions = () => (
     <LeadingActions>
-      <SwipeAction onClick={() => {}}>Upload</SwipeAction>
+      <SwipeAction onClick={() => dispatch({type:'get-expense-by-id', payload:{id: expense.id}})}>Upload</SwipeAction>
     </LeadingActions>
   );
 
