@@ -4,7 +4,7 @@ import { IAmountDisplayProps } from "./amountDisplay.types"
 const AmountDisplay = ({amount, label}: IAmountDisplayProps) => {
   return (
     <p className=" text-2xl text-blue-600 font-bold">
-        {`${label}: `}
+        {label && `${label}: `}
 
         <span className=" font-black text-black">{formatCurrency(amount)}</span>
 

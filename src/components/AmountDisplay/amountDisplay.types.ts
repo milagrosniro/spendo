@@ -1,4 +1,4 @@
 export interface IAmountDisplayProps{
-    label: string;
+    label?: string;
     amount: number;
 }
