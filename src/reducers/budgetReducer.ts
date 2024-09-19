@@ -14,7 +14,7 @@ export const initialState :IBudgetState = {
 
 const createExpense = (draftExpense: DraftExpense) : Expense =>{return {...draftExpense, id: uuidV4()}}
 
-export const budgetReducer = (state: IBudgetState = initialState, action: BudgetActions) =>{
+export const budgetReducer = (state: IBudgetState = initialState, action: BudgetActions) : IBudgetState =>{
     switch(action.type){
         case 'add-budget':{
             const {budget} = action.payload
@@ -69,7 +69,8 @@ export const budgetReducer = (state: IBudgetState = initialState, action: Budget
                 budget: 0,
                 modal: false,
                 expenses:[],
-                editingId:''
+                editingId:'',
+                currentCategory:''
             }
         };
 
