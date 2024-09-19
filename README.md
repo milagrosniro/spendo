@@ -28,3 +28,31 @@
 1. Clone the repository:
    ```bash
    git clone https://github.com/milagrosniro/spendo.git
+   cd spendo
+
+## 🧑‍💻 Installation & Setup
+
+**Install Dependencies:**
+
+```bash
+npm install
+```
+
+**Start the Project:**
+
+```bash
+npm run dev
+
+The project will be available at https://66ebdf27558e394d1e2927ec--soft-quokka-3a125e.netlify.app/
+```
+
+## 📋 Available Scripts
+```bash
+npm run dev: Starts the development server.
+npm run build: Builds the project for production.
+npm run lint: Runs ESLint to analyze the code.
+npm run test: Runs unit tests (if any).
+ ```
+
+## 📝 License
+This project is licensed under the MIT License.
