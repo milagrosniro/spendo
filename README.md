@@ -30,6 +30,10 @@
    git clone https://github.com/milagrosniro/spendo.git
    cd spendo
 
+## 🚀 Live Demo
+
+Check out the live version [here](https://66ebdf27558e394d1e2927ec--soft-quokka-3a125e.netlify.app/).
+
 ## 🧑‍💻 Installation & Setup
 
 **Install Dependencies:**
@@ -43,7 +47,6 @@ npm install
 ```bash
 npm run dev
 
-The project will be available at https://66ebdf27558e394d1e2927ec--soft-quokka-3a125e.netlify.app/
 ```
 
 ## 📋 Available Scripts
