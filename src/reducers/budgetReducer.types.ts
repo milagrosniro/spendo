@@ -1,4 +1,4 @@
-import { DraftExpense, Expense } from "../components/ExpenseForm/expenseForm.types"
+import { Category, DraftExpense, Expense } from "../components/ExpenseForm/expenseForm.types"
 
 export type BudgetActions = 
     {type:'add-budget', payload:{budget:number}} |
@@ -7,12 +7,16 @@ export type BudgetActions =
     {type:'add-expense', payload:{expense: DraftExpense}} |
     {type:'delete-expense', payload:{id: Expense['id']}} |
     {type:'update-expense', payload:{expense: Expense}} |
-    {type:'get-expense-by-id', payload:{id: Expense['id']}} 
+    {type:'get-expense-by-id', payload:{id: Expense['id']}} |
+    {type:'reset'} |
+    {type:'add-filter-category', payload:{id: Category['id']}}
+
 
 
 export interface IBudgetState {
         budget: number,
         modal: boolean,
         expenses: Expense[],
-        editingId: Expense['id']
+        editingId: Expense['id'],
+        currentCategory: Category['id']
     }

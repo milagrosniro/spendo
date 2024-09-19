@@ -8,70 +8,87 @@ import ErrorMsg from "../ErrorMsg";
 import { DraftExpense, Value } from "./expenseForm.types";
 
 const ExpenseForm = () => {
-  const initialStateExpense : DraftExpense = {
+  const initialStateExpense: DraftExpense = {
     amount: 0,
     expenseName: "",
     category: "",
     date: new Date(),
-  }
+  };
 
   const [expense, setExpense] = useState<DraftExpense>(initialStateExpense);
 
-  const[error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
+  const [previousAmount, setPreviousAmount] = useState<number>(0);
 
   const { amount, expenseName, category, date } = expense;
 
-  const {dispatch, state} = useBudget();
+  const { dispatch, state, remainingBudget } = useBudget();
+  const { editingId, expenses } = state;
 
-useEffect(()=>{
-  if(state.editingId){
-    const editingExpense = state.expenses.find(exp => exp.id === state.editingId)
-    if(editingExpense) setExpense(editingExpense)
-  }
-},[state.editingId])
+  useEffect(() => {
+    if (editingId) {
+      const editingExpense = expenses.find((exp) => exp.id === editingId);
 
+      if (editingExpense) setExpense(editingExpense);
+    }
+  }, [editingId]);
+
+  useEffect(() => {
+    setPreviousAmount(amount);
+  }, [remainingBudget, amount]);
 
   const handleChangeDate = (value: Value) => {
-    setExpense({...expense, date: value})}
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => { 
-    const {name, value} = e.target;
-    const isAmountField = ['amount'].includes(name);
-    return isAmountField ? setExpense({...expense, [name] : +value}) : setExpense({...expense, [name] : value})
-    }
+    setExpense({ ...expense, date: value });
+  };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
-      e.preventDefault();
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    const isAmountField = ["amount"].includes(name);
+    return isAmountField
+      ? setExpense({ ...expense, [name]: +value })
+      : setExpense({ ...expense, [name]: value });
+  };
 
-      const isFormComplete = !Object.values(expense).includes('') && !Object.values(expense).includes(0) ;
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-      if(!isFormComplete){
-        setError('All fields are required')
+    if (amount - previousAmount > remainingBudget)
+      return setError("Expense over budget");
+    const isFormComplete =
+      !Object.values(expense).includes("") &&
+      !Object.values(expense).includes(0);
+
+    if (!isFormComplete) {
+      setError("All fields are required");
+    } else {
+      setError("");
+
+      if (editingId) {
+        dispatch({
+          type: "update-expense",
+          payload: { expense: { id: editingId, ...expense } },
+        });
       } else {
-        setError('');
-    
-        if(state.editingId){
-          dispatch({type:'update-expense', payload: {expense : {id:state.editingId, ...expense}}})
-        }else{
-          dispatch({type:'add-expense', payload:{expense}})
-        }
-       
-        dispatch({type:'close-modal'});
-         setExpense(initialStateExpense)
+        dispatch({ type: "add-expense", payload: { expense } });
       }
-      
-     }
+
+      dispatch({ type: "close-modal" });
+      setExpense(initialStateExpense);
+      setPreviousAmount(0);
+    }
+  };
 
   return (
-    <form 
-    className=" space-y-5"
-    onSubmit={handleSubmit}
-    >
+    <form className=" space-y-5" onSubmit={handleSubmit}>
       <legend className=" uppercase text-center text-2xl font-black border-b-4 border-blue-500 py-2">
-        New Expense{" "}
+        {editingId ? "Edit Expense" : "New Expense"}
       </legend>
 
-      {error.trim() !== '' && <ErrorMsg>{error}</ErrorMsg>}
+      {error.trim() !== "" && <ErrorMsg>{error}</ErrorMsg>}
 
       <div className=" flex flex-col gap-2">
         <label htmlFor="expenseName" className=" text-xl">
@@ -112,10 +129,11 @@ useEffect(()=>{
           className=" bg-slate-100 p-2"
           name="category"
           value={category}
-          onChange={(e)=>handleChange(e)}
-          
+          onChange={(e) => handleChange(e)}
         >
-          <option value='' disabled hidden>--- Select ---</option>
+          <option value="" disabled hidden>
+            --- Select ---
+          </option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
@@ -128,17 +146,17 @@ useEffect(()=>{
         <label htmlFor="date" className=" text-xl">
           Date:
         </label>
-        <DatePicker 
-        className=" bg-slate-100 p-2 border-0" 
-        value={date}
-        onChange={handleChangeDate}
-         />
+        <DatePicker
+          className=" bg-slate-100 p-2 border-0"
+          value={date}
+          onChange={handleChangeDate}
+        />
       </div>
 
       <input
         type="submit"
         className=" bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg"
-        value={"Record Expense"}
+        value={editingId ? "Save Changes" : "Save Expense"}
       />
     </form>
   );

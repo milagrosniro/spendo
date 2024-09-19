@@ -1,14 +1,16 @@
 import { v4 as uuidV4 } from 'uuid';
 import { DraftExpense, Expense } from "../components/ExpenseForm/expenseForm.types";
+import { initialBudget, localStorageExpenses } from '../helpers';
 import { BudgetActions, IBudgetState } from "./budgetReducer.types";
 
 export const initialState :IBudgetState = {
-    budget: 0,
+    budget: initialBudget(),
     modal: false,
-    expenses:[],
-    editingId:''
-
+    expenses:localStorageExpenses(),
+    editingId:'',
+    currentCategory: ''
 }
+ 
 
 const createExpense = (draftExpense: DraftExpense) : Expense =>{return {...draftExpense, id: uuidV4()}}
 
@@ -60,6 +62,25 @@ export const budgetReducer = (state: IBudgetState = initialState, action: Budget
                 modal: true
              }
         };
+
+        case 'reset' : {
+
+            return{
+                budget: 0,
+                modal: false,
+                expenses:[],
+                editingId:''
+            }
+        };
+
+        case 'add-filter-category' : {
+            const {id} = action.payload;
+
+            return{
+                ...state,
+                currentCategory: id
+            }
+        }
 
         default : return state
 
